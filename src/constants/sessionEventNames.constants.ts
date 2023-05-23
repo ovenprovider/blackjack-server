@@ -1,3 +1,4 @@
 export const sessionEventNames = {
-  startGame: 'startGame'
+  startGame: 'startGame',
+  updateReadyState: 'updateReadyState'
 }

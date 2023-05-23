@@ -21,11 +21,6 @@ export class Player {
     this.name = name
   }
 
-  reset() {
-    this.hand = []
-    this.isHolding = false
-  }
-
   setIsHolding(isHolding: boolean) {
     this.isHolding = isHolding
   }
