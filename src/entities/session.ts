@@ -1,10 +1,10 @@
 // Libraries
-import { WebSocket } from "ws"
+import { WebSocket } from 'ws'
 
 // Entities
-import { Deck } from "./deck"
-import { Game } from "./game"
-import { Player } from "./player"
+import { Deck } from './deck'
+import { Game } from './game'
+import { Player } from './player'
 
 export class Session {
   private readonly numberOfPlayers: number
@@ -35,7 +35,7 @@ export class Session {
 
   removePlayerFromSession(playerId: string) {
     const playerToRemove = this.players.findIndex((player) => playerId === player.getId())
-    
+
     if (playerToRemove >= 0) this.players.splice(playerToRemove, 1)
   }
 

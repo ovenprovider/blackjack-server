@@ -1,3 +1,3 @@
 export const sessionEventNames = {
-  startGame: 'startGame',
+  startGame: 'startGame'
 }

@@ -14,32 +14,31 @@ import { Sessions } from '@types'
 
 export const runServer = () => {
   const sessions: Sessions = new Map()
-  
+
   // TODO: add auth
   const wss = new WebSocketServer({
-    port: 8080,
+    port: 8080
   })
-  
-  wss.on('connection', (ws) => {
 
+  wss.on('connection', (ws) => {
     ws.on('error', console.error)
     ws.on('message', (data) => {
       const clientPayload = parseJSON(data.toString())
 
       // Validate data: the validation will also fail here if the JSON has failed to parse
-      if(!validateClientEventPayload(data.toString())) {
+      if (!validateClientEventPayload(data.toString())) {
         sendPayloadToClient(ws, {}, 'error')
         //ws.close(1007) // Unsupported payload
         ws.terminate()
       }
 
-      if(validateClientEventPayloadAction(clientPayload)) {
+      if (validateClientEventPayloadAction(clientPayload)) {
         sendPayloadToClient(ws, {}, 'error')
         //ws.close(1007) // Unsupported payload
         ws.terminate()
       }
 
-      if(sessions.has(ws) && clientPayload?.eventName === serverEventNames.startSession) {
+      if (sessions.has(ws) && clientPayload?.eventName === serverEventNames.startSession) {
         sendPayloadToClient(ws, {}, 'Session already in progress')
         ws.terminate()
       }

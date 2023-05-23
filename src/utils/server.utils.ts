@@ -1,17 +1,17 @@
 // Libraries
-import { WebSocket } from "ws"
+import { WebSocket } from 'ws'
 
 // Entities
-import { Session } from "entities"
+import { Session } from 'entities'
 
 // Events
 import { closeSession, startSession, startGame, joinSession } from '../events'
 
 // Constants
-import { serverEventNames, sessionEventNames, errors } from "../constants"
+import { serverEventNames, sessionEventNames, errors } from '../constants'
 
 // Types
-import { Sessions } from "@types"
+import { Sessions } from '@types'
 
 export const parseJSON = (data: string) => {
   try {
@@ -40,7 +40,7 @@ export const handleServerEvents = (ws: WebSocket, sessions: Sessions, clientPayl
 
 export const handleSessionEvent = (ws: WebSocket, session: Session, clientPayload: any) => {
   switch (clientPayload.eventName) {
-    case sessionEventNames.startGame: 
+    case sessionEventNames.startGame:
       startGame(ws, session, clientPayload.id)
       break
   }
@@ -62,4 +62,3 @@ export const findSession = (id: string, sessions: Sessions) => {
 export const sendPayloadToClient = (ws: WebSocket, payload: any, event: string) => {
   ws.emit(event, payload)
 }
-

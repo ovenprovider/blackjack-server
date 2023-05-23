@@ -1,17 +1,17 @@
 // Libraries
-import WebSocket from "ws"
+import WebSocket from 'ws'
 
 // Entities
-import { Player, Session} from "entities"
+import { Player, Session } from 'entities'
 
 // Utils
-import { findSession, handleEventError, sendPayloadToClient } from "utils"
+import { findSession, handleEventError, sendPayloadToClient } from 'utils'
 
 // Constants
-import { errors, serverEventNames } from "../constants"
+import { errors, serverEventNames } from '../constants'
 
 // Types
-import { Sessions } from "@types"
+import { Sessions } from '@types'
 
 export const startSession = (ws: WebSocket, sessions: Sessions, clientPayload: any) => {
   sessions.set(ws, new Session(clientPayload.maxNumberOfPlayers ?? 2, new Player(ws)))
@@ -19,7 +19,7 @@ export const startSession = (ws: WebSocket, sessions: Sessions, clientPayload: a
 
   const payload = {
     id,
-    maxNumberOfPlayers: clientPayload.maxNumberOfPlayers,
+    maxNumberOfPlayers: clientPayload.maxNumberOfPlayers
   }
   ws.emit(serverEventNames.startSession, payload)
 }
@@ -34,8 +34,7 @@ export const joinSession = (ws: WebSocket, sessions: Sessions, id: string) => {
 
   const payload = {
     id: session.getId(),
-    players: session.getPlayers(),
-
+    players: session.getPlayers()
   }
 
   sendPayloadToClient(ws, payload, serverEventNames.joinSession)

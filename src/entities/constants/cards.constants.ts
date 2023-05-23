@@ -1,4 +1,4 @@
-import { Suit } from "entities/card"
+import { Suit } from 'entities/card'
 
 export const suits: Suit[] = ['Clubs', 'Diamonds', 'Hearts', 'Spade']
 

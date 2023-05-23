@@ -1,8 +1,8 @@
 // Libraries
-import WebSocket from "ws"
+import WebSocket from 'ws'
 
 // Entities
-import { Card } from "./card"
+import { Card } from './card'
 
 export class Player {
   private hand: Card[] = []
@@ -22,7 +22,7 @@ export class Player {
   setIsHolding(isHolding: boolean) {
     this.isHolding = isHolding
   }
-  
+
   getIsHolding() {
     return this.isHolding
   }
