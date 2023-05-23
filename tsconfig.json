@@ -25,6 +25,6 @@
     "skipLibCheck": true                      /* Skip type checking of declaration files. */
   },
   "exclude": [
-    "node_modules", "libs/@types", ".babelrc.js"
+    "node_modules", "libs/@types"
   ],
 }

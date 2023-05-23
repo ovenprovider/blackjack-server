@@ -1,4 +1,7 @@
+// Libraries
 import { WebSocket } from "ws"
+
+// Entities
 import { Deck } from "./deck"
 import { Game } from "./game"
 import { Player } from "./player"

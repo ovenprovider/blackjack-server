@@ -1,5 +1,8 @@
+// Entities
 import { Card } from "./card"
-import { cardNumbers, suits } from "./constants/cards.constants"
+
+// Constants
+import { cardNumbers, suits } from "./constants"
 
 export class Deck {
     private initialDeck: Card[] = []

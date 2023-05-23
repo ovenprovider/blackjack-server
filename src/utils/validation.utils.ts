@@ -1,4 +1,5 @@
-import { eventNames } from "constants/eventNames.constants"
+// Constants
+import { sessionEventNames, serverEventNames } from '../constants'
 
 // TODO: after typing the payloads, programmatically fill the array with allowed properties
 const allowedProperties = [
@@ -15,5 +16,6 @@ export const validateClientEventPayload = (clientPayload: any) => {
 }
 
 export const validateClientEventPayloadAction = (clientPayload: any) => {
-  return !Object.values(eventNames).includes(clientPayload.action)
+  return !Object.values(sessionEventNames).includes(clientPayload.action) && 
+    !Object.values(serverEventNames).includes(clientPayload.action)
 }

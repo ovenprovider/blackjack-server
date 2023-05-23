@@ -1,4 +1,7 @@
+// Libraries
 import WebSocket from "ws"
+
+// Entities
 import { Card } from "./card"
 
 export class Player {
