@@ -14,7 +14,7 @@ import { errors, serverEventNames } from '../constants'
 import { Sessions } from '@types'
 
 export const startSession = (ws: WebSocket, sessions: Sessions, clientPayload: any) => {
-  sessions.set(ws, new Session(clientPayload.maxNumberOfPlayers ?? 2, new Player(ws)))
+  sessions.set(ws, new Session(clientPayload.maxNumberOfPlayers ?? 2, new Player(ws, clientPayload.name)))
   const id = sessions.get(ws)?.getId()
 
   const payload = {
@@ -24,13 +24,13 @@ export const startSession = (ws: WebSocket, sessions: Sessions, clientPayload: a
   ws.emit(serverEventNames.startSession, payload)
 }
 
-export const joinSession = (ws: WebSocket, sessions: Sessions, id: string) => {
+export const joinSession = (ws: WebSocket, sessions: Sessions, id: string, name: string) => {
   const session = findSession(id, sessions)
   if (!session) {
     handleEventError(ws, errors.sessionNotFound)
     return
   }
-  session.addPlayerToSession(new Player(ws))
+  session.addPlayerToSession(new Player(ws, name))
 
   const payload = {
     id: session.getId(),

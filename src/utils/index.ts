@@ -4,6 +4,9 @@ export {
   handleServerEvents,
   handleSessionEvent,
   parseJSON,
-  sendPayloadToClient
+  sendPayloadToClient,
+  isServerEvent,
+  isSessionEvent
 } from './server.utils'
-export { validateClientEventPayload, validateClientEventPayloadAction } from './validation.utils'
+export { validateClientEventPayload } from './validation.utils'
+export { getUuid } from './uuid.utils'

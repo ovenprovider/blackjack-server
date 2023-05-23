@@ -30,9 +30,9 @@ export const handleServerEvents = (ws: WebSocket, sessions: Sessions, clientPayl
       startSession(ws, sessions, clientPayload)
       break
     case serverEventNames.joinSession:
-      joinSession(ws, sessions, clientPayload.id)
+      joinSession(ws, sessions, clientPayload.id, clientPayload.name)
       break
-    case serverEventNames.endSession:
+    case serverEventNames.closeSession:
       closeSession(ws, sessions)
       break
   }
@@ -61,4 +61,12 @@ export const findSession = (id: string, sessions: Sessions) => {
 
 export const sendPayloadToClient = (ws: WebSocket, payload: any, event: string) => {
   ws.emit(event, payload)
+}
+
+export const isServerEvent = (clientPayload: any) => {
+  return !Object.values(sessionEventNames).includes(clientPayload.eventName)
+}
+
+export const isSessionEvent = (clientPayload: any) => {
+  return !Object.values(serverEventNames).includes(clientPayload.eventName)
 }

@@ -1,13 +1,15 @@
 // Libraries
 import { WebSocketServer } from 'ws'
-import { serverEventNames } from 'constants/serverEventNames.constants'
 
 // Events
 import { closeSession } from './events'
 
 // Utils
-import { handleSessionEvent, parseJSON, sendPayloadToClient } from 'utils/server.utils'
-import { validateClientEventPayloadAction, validateClientEventPayload } from 'utils/validation.utils'
+import { handleServerEvents, handleSessionEvent, parseJSON, sendPayloadToClient } from 'utils/server.utils'
+import { validateClientEventPayload, isServerEvent, isSessionEvent } from 'utils'
+
+// Constants
+import { sessionEventNames, serverEventNames } from './constants'
 
 // Types
 import { Sessions } from '@types'
@@ -32,20 +34,13 @@ export const runServer = () => {
         ws.terminate()
       }
 
-      if (validateClientEventPayloadAction(clientPayload)) {
-        sendPayloadToClient(ws, {}, 'error')
-        //ws.close(1007) // Unsupported payload
-        ws.terminate()
-      }
-
-      if (sessions.has(ws) && clientPayload?.eventName === serverEventNames.startSession) {
-        sendPayloadToClient(ws, {}, 'Session already in progress')
-        ws.terminate()
+      if (isServerEvent(clientPayload)) {
+        handleServerEvents(ws, sessions, clientPayload)
       }
 
       // TODO: import findsession and handle session search
       const session = sessions.get(ws)
-      if (session) {
+      if (session && isSessionEvent(clientPayload)) {
         handleSessionEvent(ws, session, clientPayload)
       }
 

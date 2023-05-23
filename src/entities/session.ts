@@ -2,18 +2,20 @@
 import { WebSocket } from 'ws'
 
 // Entities
-import { Deck } from './deck'
 import { Game } from './game'
 import { Player } from './player'
 
+// Utils
+import { getUuid } from 'utils'
+
 export class Session {
-  private readonly numberOfPlayers: number
-  private readonly id = 'test'
+  private readonly maxNumberOfPlayers: number
+  private readonly id = getUuid()
   private players: Player[]
   private game?: Game
 
-  constructor(numberOfPlayers: number, player: Player) {
-    this.numberOfPlayers = numberOfPlayers
+  constructor(maxNumberOfPlayers: number, player: Player) {
+    this.maxNumberOfPlayers = maxNumberOfPlayers
     this.players = [player]
   }
 
@@ -33,13 +35,11 @@ export class Session {
     this.game = new Game(this.players)
   }
 
-  removePlayerFromSession(playerId: string) {
-    const playerToRemove = this.players.findIndex((player) => playerId === player.getId())
-
-    if (playerToRemove >= 0) this.players.splice(playerToRemove, 1)
-  }
-
   getGame() {
     return this.game
+  }
+
+  getMaxNumberOfPlayers() {
+    return this.maxNumberOfPlayers
   }
 }

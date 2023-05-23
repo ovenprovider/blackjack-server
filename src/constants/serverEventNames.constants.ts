@@ -1,5 +1,5 @@
 export const serverEventNames = {
   startSession: 'startSession',
-  endSession: 'endSession',
+  closeSession: 'closeSession',
   joinSession: 'joinSession'
 }

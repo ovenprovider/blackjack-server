@@ -1,14 +1,14 @@
 // Libraries
-import WebSocket from "ws"
+import WebSocket from 'ws'
 
 // Entities
-import { Session } from "entities"
+import { Session } from 'entities'
 
 // Constants
-import { errors, sessionEventNames } from "../constants"
+import { errors, sessionEventNames } from '../constants'
 
 // Utils
-import { sendPayloadToClient, handleEventError } from "utils/server.utils"
+import { sendPayloadToClient, handleEventError } from 'utils/server.utils'
 
 export const startGame = (ws: WebSocket, session: Session, id: string) => {
   const numberOfPlayers = session.getPlayers().length
@@ -21,5 +21,6 @@ export const startGame = (ws: WebSocket, session: Session, id: string) => {
   const payload = {
     id: session.getId()
   }
+
   sendPayloadToClient(ws, payload, sessionEventNames.startGame)
 }
