@@ -1,11 +1,18 @@
-import { Player } from 'entities'
+// Entities
+import { InSessionClient } from 'entities'
 
-export const updateReadyStatePayload = (players: Player[]) => {
-  const transformedPlayers = players.map((player) => {
-    return {
-      name: player.getName(),
-      id: player.getId(),
-      ready: player.getReadyState()
-    }
+const transformInSessionClient = (client: InSessionClient) => ({
+  id: client.id,
+  name: client.name,
+  isReady: client.isReady
+})
+
+export const updateReadyStatePayload = (clients: InSessionClient[]) => {
+  const transformedClientsData = clients.map((client) => {
+    return transformInSessionClient(client)
   })
+
+  return {
+    clients: transformedClientsData
+  }
 }

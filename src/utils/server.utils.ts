@@ -5,7 +5,7 @@ import { WebSocket } from 'ws'
 import { Session } from 'entities'
 
 // Events
-import { closeSession, startSession, startGame, joinSession } from '../events'
+import { closeSession, startSession, startGame, joinSession, updateReadyState } from '../events'
 
 // Constants
 import { serverEventNames, sessionEventNames, errors } from '../constants'
@@ -41,7 +41,10 @@ export const handleServerEvents = (ws: WebSocket, sessions: Sessions, clientPayl
 export const handleSessionEvent = (ws: WebSocket, session: Session, clientPayload: any) => {
   switch (clientPayload.eventName) {
     case sessionEventNames.startGame:
-      startGame(ws, session, clientPayload.id)
+      startGame(ws, session)
+      break
+    case sessionEventNames.updateReadyState:
+      updateReadyState(ws, session)
       break
   }
 }

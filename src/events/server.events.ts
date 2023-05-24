@@ -2,7 +2,7 @@
 import WebSocket from 'ws'
 
 // Entities
-import { Player, Session } from 'entities'
+import { InSessionClient, Session } from 'entities'
 
 // Utils
 import { findSession, handleEventError, sendPayloadToClient } from 'utils'
@@ -14,8 +14,8 @@ import { errors, serverEventNames } from '../constants'
 import { Sessions } from '@types'
 
 export const startSession = (ws: WebSocket, sessions: Sessions, clientPayload: any) => {
-  sessions.set(ws, new Session(clientPayload.maxNumberOfPlayers ?? 2, new Player(ws, clientPayload.name)))
-  const id = sessions.get(ws)?.getId()
+  sessions.set(ws, new Session(clientPayload.maxNumberOfPlayers ?? 2, new InSessionClient(ws, clientPayload.name)))
+  const id = sessions.get(ws)?.id
 
   const payload = {
     id,
@@ -30,7 +30,7 @@ export const joinSession = (ws: WebSocket, sessions: Sessions, id: string, name:
     handleEventError(ws, errors.sessionNotFound)
     return
   }
-  session.addPlayerToSession(new Player(ws, name))
+  session.addPlayerToSession(new InSessionClient(ws, name))
 
   const payload = {
     id: session.getId(),
@@ -43,7 +43,7 @@ export const joinSession = (ws: WebSocket, sessions: Sessions, id: string, name:
 export const closeSession = (ws: WebSocket, sessions: Sessions) => {
   const session = sessions.get(ws)
   if (!session) return
-  if (session.getPlayers().length <= 1) {
+  if (session.clients.length <= 1) {
     sessions.delete(ws)
   }
 }

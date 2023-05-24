@@ -1,1 +1,1 @@
-export { arePlayersReady } from './session.utils'
+export { areClientsReady } from './session.utils'

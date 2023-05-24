@@ -1,6 +1,5 @@
 // Entities
-import { Card } from 'entities/card'
-import { Player } from 'entities/player'
+import { Card, InGameClient } from 'entities'
 
 export const calculateHandValue = (hand: Card[]) => {
   return hand.reduce((accumulator, card) => {
@@ -15,7 +14,7 @@ export const calculateHandValue = (hand: Card[]) => {
 
 const isBusted = (hand: Card[]) => calculateHandValue(hand) > 21
 
-export const skipPlayer = (player: Player) => {
-  if (player.getIsHolding() || isBusted(player.getHand())) return true
+export const skipPlayer = (client: InGameClient) => {
+  if (client.isHolding || isBusted(client.hand)) return true
   return false
 }

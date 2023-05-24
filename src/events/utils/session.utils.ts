@@ -1,6 +1,6 @@
-// Libraries
-import { Player } from 'entities'
+// Entities
+import { InSessionClient } from 'entities'
 
-export const arePlayersReady = (players: Player[]) => {
-  return players.every((player) => player.getReadyState())
+export const areClientsReady = (clients: InSessionClient[]) => {
+  return clients.every((client) => client.isReady)
 }

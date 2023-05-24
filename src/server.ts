@@ -5,11 +5,15 @@ import { WebSocketServer } from 'ws'
 import { closeSession } from './events'
 
 // Utils
-import { handleServerEvents, handleSessionEvent, parseJSON, sendPayloadToClient } from 'utils/server.utils'
-import { validateClientEventPayload, isServerEvent, isSessionEvent } from 'utils'
-
-// Constants
-import { sessionEventNames, serverEventNames } from './constants'
+import {
+  handleServerEvents,
+  handleSessionEvent,
+  parseJSON,
+  sendPayloadToClient,
+  validateClientEventPayload,
+  isServerEvent,
+  isSessionEvent
+} from 'utils'
 
 // Types
 import { Sessions } from '@types'

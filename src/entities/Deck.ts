@@ -1,19 +1,19 @@
 // Entities
-import { Card } from './card'
+import { Card } from './Card'
 
 // Constants
-import { cardNumbers, suits } from './constants'
+import { cardNumbers, suits } from './Card/constants'
 
 export class Deck {
   private initialDeck: Card[] = []
   private currentDeck: Card[] = []
 
   constructor() {
-    this.initiateDeck()
-    this.shuffle()
+    this.#initiateDeck()
+    this.#shuffle()
   }
 
-  initiateDeck() {
+  #initiateDeck() {
     for (const suit of suits) {
       for (const [name, value] of Object.entries(cardNumbers)) {
         this.initialDeck.push(new Card(suit, name, value))
@@ -25,7 +25,7 @@ export class Deck {
     return this.currentDeck.shift()
   }
 
-  shuffle() {
+  #shuffle() {
     for (let i = 0; i < this.initialDeck.length; i++) {
       const randomIndex = Math.floor(Math.random() * (this.initialDeck.length - 0))
       this.currentDeck.push(...this.initialDeck.splice(randomIndex))

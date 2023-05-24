@@ -1,4 +1,4 @@
 // Libraries
-import { runServer } from "server";
+import { runServer } from 'server'
 
 runServer()
