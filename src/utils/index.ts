@@ -3,10 +3,13 @@ export {
   handleEventError,
   handleServerEvents,
   handleSessionEvent,
+  handleGameEvent,
   parseJSON,
   sendPayloadToClient,
+  sendPayloadToClients,
   isServerEvent,
-  isSessionEvent
+  isSessionEvent,
+  isGameEvent
 } from './server.utils'
 export { validateClientEventPayload } from './validation.utils'
 export { getUuid } from './uuid.utils'

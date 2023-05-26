@@ -2,16 +2,16 @@
 import { WebSocket } from 'ws'
 
 // Entities
-import { Session } from 'entities'
-
-// Events
-import { closeSession, startSession, startGame, joinSession, updateReadyState } from '../events'
-
-// Constants
-import { serverEventNames, sessionEventNames, errors } from '../constants'
+import { Game, InGameClient, InSessionClient, Session } from 'entities'
 
 // Types
 import { Sessions } from '@types'
+
+// Constants
+import { gameEventNames, serverEventNames, sessionEventNames, errors } from '../constants'
+
+// Events
+import { closeSession, startSession, startGame, joinSession, updateIsReady, updateIsOnScreen } from '../events'
 
 export const parseJSON = (data: string) => {
   try {
@@ -43,8 +43,16 @@ export const handleSessionEvent = (ws: WebSocket, session: Session, clientPayloa
     case sessionEventNames.startGame:
       startGame(ws, session)
       break
-    case sessionEventNames.updateReadyState:
-      updateReadyState(ws, session)
+    case sessionEventNames.updateIsReady:
+      updateIsReady(ws, session)
+      break
+  }
+}
+
+export const handleGameEvent = (ws: WebSocket, game: Game, clientPayload: any, sessionId: string) => {
+  switch (clientPayload.eventName) {
+    case gameEventNames.updateIsOnScreen:
+      updateIsOnScreen(ws, game, clientPayload.isOnScreen, sessionId)
       break
   }
 }
@@ -62,6 +70,12 @@ export const findSession = (id: string, sessions: Sessions) => {
   return sessionFound
 }
 
+export const sendPayloadToClients = (clients: InGameClient[] | InSessionClient[], payload: any, event: string) => {
+  clients.forEach((client) => {
+    sendPayloadToClient(client.webSocket, event, payload)
+  })
+}
+
 export const sendPayloadToClient = (ws: WebSocket, payload: any, event: string) => {
   ws.emit(event, payload)
 }
@@ -72,4 +86,8 @@ export const isServerEvent = (clientPayload: any) => {
 
 export const isSessionEvent = (clientPayload: any) => {
   return !Object.values(serverEventNames).includes(clientPayload.eventName)
+}
+
+export const isGameEvent = (clientPayload: any) => {
+  return !Object.values(gameEventNames).includes(clientPayload.eventName)
 }

@@ -4,14 +4,14 @@ import WebSocket from 'ws'
 // Entities
 import { InSessionClient, Session } from 'entities'
 
-// Utils
-import { findSession, handleEventError, sendPayloadToClient } from 'utils'
+// Types
+import { Sessions } from '@types'
 
 // Constants
 import { errors, serverEventNames } from '../constants'
 
-// Types
-import { Sessions } from '@types'
+// Utils
+import { findSession, handleEventError, sendPayloadToClient } from 'utils'
 
 export const startSession = (ws: WebSocket, sessions: Sessions, clientPayload: any) => {
   sessions.set(ws, new Session(clientPayload.maxNumberOfPlayers ?? 2, new InSessionClient(ws, clientPayload.name)))
@@ -42,6 +42,7 @@ export const joinSession = (ws: WebSocket, sessions: Sessions, id: string, name:
 
 export const closeSession = (ws: WebSocket, sessions: Sessions) => {
   const session = sessions.get(ws)
+  // TODO: handle when session is not found
   if (!session) return
   if (session.clients.length <= 1) {
     sessions.delete(ws)

@@ -1,6 +1,9 @@
 // Libraries
 import { WebSocketServer } from 'ws'
 
+// Types
+import { Sessions } from '@types'
+
 // Events
 import { closeSession } from './events'
 
@@ -8,15 +11,14 @@ import { closeSession } from './events'
 import {
   handleServerEvents,
   handleSessionEvent,
+  handleGameEvent,
   parseJSON,
   sendPayloadToClient,
   validateClientEventPayload,
   isServerEvent,
-  isSessionEvent
+  isSessionEvent,
+  isGameEvent
 } from 'utils'
-
-// Types
-import { Sessions } from '@types'
 
 export const runServer = () => {
   const sessions: Sessions = new Map()
@@ -44,8 +46,21 @@ export const runServer = () => {
 
       // TODO: import findsession and handle session search
       const session = sessions.get(ws)
-      if (session && isSessionEvent(clientPayload)) {
+
+      // TODO: handle these checks properly
+      if (!session) {
+        return
+      }
+
+      if (isSessionEvent(clientPayload)) {
         handleSessionEvent(ws, session, clientPayload)
+      }
+
+      if (isGameEvent(clientPayload)) {
+        const game = session.game
+        if (game) {
+          handleGameEvent(ws, game, clientPayload, session.id)
+        }
       }
 
       console.warn(sessions)

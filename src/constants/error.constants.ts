@@ -2,5 +2,8 @@ export const errors = {
   eventNotFound: 'eventNotFound',
   sessionNotFound: 'sessionNotFound',
   notEnoughPlayers: 'notEnoughPlayers',
-  notEveryPlayerIsReady: 'notEveryPlayerIsReady'
+  notEveryPlayerIsReady: 'notEveryPlayerIsReady',
+  gameAlreadyStarted: 'gameAlreadyStarted',
+  clientIsNotHost: 'clientIsNotHost',
+  clientNotFound: 'clientNotFound'
 }

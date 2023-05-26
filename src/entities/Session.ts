@@ -9,11 +9,13 @@ export class Session {
   readonly #maxNumberOfPlayers: number
   readonly #id = getUuid()
   #clients: InSessionClient[]
-  #game?: Game
+  #host: InSessionClient
+  #game: Game | undefined
 
   constructor(maxNumberOfPlayers: number, client: InSessionClient) {
     this.#maxNumberOfPlayers = maxNumberOfPlayers
     this.#clients = [client]
+    this.#host = client
   }
 
   get id() {
@@ -22,6 +24,10 @@ export class Session {
 
   get clients() {
     return this.#clients
+  }
+
+  get host() {
+    return this.#host
   }
 
   initialiseGame() {

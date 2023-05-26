@@ -5,23 +5,23 @@ import WebSocket from 'ws'
 import { getUuid } from 'utils'
 
 export abstract class Client {
-  protected readonly _id: string = getUuid()
-  protected _ws: WebSocket
-  protected _name: string
+  readonly #id: string = getUuid()
+  #ws: WebSocket
+  #name: string
   constructor(webSocket: WebSocket, name: string) {
-    this._ws = webSocket
-    this._name = name
+    this.#ws = webSocket
+    this.#name = name
   }
 
   get id() {
-    return this._id
+    return this.#id
   }
 
   get name() {
-    return this._name
+    return this.#name
   }
 
   get webSocket() {
-    return this._ws
+    return this.#ws
   }
 }

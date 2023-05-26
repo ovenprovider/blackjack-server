@@ -8,10 +8,21 @@ import { Session } from 'entities'
 import { errors, sessionEventNames } from '../constants'
 
 // Utils
-import { sendPayloadToClient, handleEventError } from 'utils/'
-import { areClientsReady } from 'events/utils'
+import { sendPayloadToClient, handleEventError, sendPayloadToClients } from 'utils'
+import { areClientsReady, isClientHost } from 'events/utils'
+import { updateIsReadyPayload } from './payloads/session.payloads'
 
 export const startGame = (ws: WebSocket, session: Session) => {
+  if (session.game) {
+    handleEventError(ws, errors.gameAlreadyStarted)
+    return
+  }
+
+  if (!isClientHost(ws, session)) {
+    handleEventError(ws, errors.clientIsNotHost)
+    return
+  }
+
   const clients = session.clients
 
   // This shouldn't happen since the ability to start the game will be blocked on the FE
@@ -32,7 +43,7 @@ export const startGame = (ws: WebSocket, session: Session) => {
   sendPayloadToClient(ws, payload, sessionEventNames.startGame)
 }
 
-export const updateReadyState = (ws: WebSocket, session: Session) => {
+export const updateIsReady = (ws: WebSocket, session: Session) => {
   const client = session.clients.find((client) => client.webSocket === ws)
 
   if (!client) {
@@ -42,12 +53,9 @@ export const updateReadyState = (ws: WebSocket, session: Session) => {
 
   client.updateIsReady()
 
-  const clients = session.clients
-  if (areClientsReady(session.clients)) {
-    const payload = {
-      players: clients
-    }
-
-    sendPayloadToClient(ws, payload, sessionEventNames.updateReadyState)
-  }
+  sendPayloadToClients(
+    session.clients,
+    updateIsReadyPayload(session.clients, session.id),
+    sessionEventNames.updateIsReady
+  )
 }

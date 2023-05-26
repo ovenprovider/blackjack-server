@@ -7,12 +7,13 @@ const transformInSessionClient = (client: InSessionClient) => ({
   isReady: client.isReady
 })
 
-export const updateReadyStatePayload = (clients: InSessionClient[]) => {
+export const updateIsReadyPayload = (clients: InSessionClient[], sessionId: string) => {
   const transformedClientsData = clients.map((client) => {
     return transformInSessionClient(client)
   })
 
   return {
+    sessionId,
     clients: transformedClientsData
   }
 }
