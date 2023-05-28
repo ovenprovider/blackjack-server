@@ -5,5 +5,7 @@ export const errors = {
   notEveryPlayerIsReady: 'notEveryPlayerIsReady',
   gameAlreadyStarted: 'gameAlreadyStarted',
   clientIsNotHost: 'clientIsNotHost',
-  clientNotFound: 'clientNotFound'
+  clientNotFound: 'clientNotFound',
+  clientIsHolding: 'clientIsHolding',
+  deckIsEmpty: 'deckIsEmpty'
 }

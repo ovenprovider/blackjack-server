@@ -70,9 +70,17 @@ export const findSession = (id: string, sessions: Sessions) => {
   return sessionFound
 }
 
-export const sendPayloadToClients = (clients: InGameClient[] | InSessionClient[], payload: any, event: string) => {
+export const sendPayloadToClients = (
+  clients: InGameClient[] | InSessionClient[],
+  payload: any,
+  event: string,
+  predicate?: (...args: any[]) => boolean
+) => {
   clients.forEach((client) => {
-    sendPayloadToClient(client.webSocket, event, payload)
+    const shouldNotSendPayloadToClient = !!(predicate && predicate())
+    if (shouldNotSendPayloadToClient) {
+      sendPayloadToClient(client.webSocket, event, payload)
+    }
   })
 }
 

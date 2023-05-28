@@ -1,9 +1,10 @@
 // Entities
 import { Client } from './Client'
-import { Card } from 'entities/Card/Card'
+import { Card } from 'entities'
 
 export class InGameClient extends Client {
   #hand: Card[] = []
+  #isDrawing = false
   #isHolding = false
   #isOnScreen = false
 
@@ -11,12 +12,24 @@ export class InGameClient extends Client {
     return this.#hand
   }
 
-  updateHand(card: Card) {
+  addCardToHand(card: Card) {
     this.#hand.push(card)
+  }
+
+  get isDrawing() {
+    return this.#isDrawing
+  }
+
+  updateIsDrawing() {
+    this.#isDrawing
   }
 
   get isHolding() {
     return this.#isHolding
+  }
+
+  updateIsHolding(isHolding: boolean) {
+    this.#isHolding = isHolding
   }
 
   get isOnScreen() {

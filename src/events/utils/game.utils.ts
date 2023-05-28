@@ -14,7 +14,7 @@ export const calculateHandValue = (hand: Card[]) => {
 
 const isBusted = (hand: Card[]) => calculateHandValue(hand) > 21
 
-export const skipPlayer = (client: InGameClient) => {
+export const shouldSkipPlayer = (client: InGameClient) => {
   if (client.isHolding || isBusted(client.hand)) return true
   return false
 }

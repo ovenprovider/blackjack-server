@@ -1,4 +1,5 @@
 export const gameEventNames = {
   updateIsOnScreen: 'updateIsOnScreen',
-  initialiseHands: 'initialiseHands'
+  initialiseHands: 'initialiseHands',
+  dealCards: 'dealCards'
 }
