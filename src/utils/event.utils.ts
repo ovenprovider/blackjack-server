@@ -98,7 +98,6 @@ export const handleGameEvent = (client: GameClient, game: Game, sessionId: strin
       clientPayload.eventName
     )
   }
-
 }
 
 export const handleEventError = (ws: WebSocket, error: string) => {
