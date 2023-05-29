@@ -2,7 +2,7 @@
 import { WebSocketServer } from 'ws'
 
 // Types
-import { Sessions } from '@types'
+import { SessionsMap } from '@types'
 
 // Events
 import { closeSession } from './events'
@@ -17,11 +17,12 @@ import {
   validateClientEventPayload,
   isServerEvent,
   isSessionEvent,
-  isGameEvent
+  isGameEvent,
+  findSessionWithClient
 } from 'utils'
 
 export const runServer = () => {
-  const sessions: Sessions = new Map()
+  const sessionsMap: SessionsMap = new Map()
 
   // TODO: add auth
   const wss = new WebSocketServer({
@@ -41,11 +42,11 @@ export const runServer = () => {
       }
 
       if (isServerEvent(clientPayload)) {
-        handleServerEvents(ws, sessions, clientPayload)
+        handleServerEvents(ws, sessionsMap, clientPayload)
+        return
       }
 
-      // TODO: import findsession and handle session search
-      const session = sessions.get(ws)
+      const session = findSessionWithClient(sessionsMap, clientPayload?.sessionId, clientPayload?.clientId, ws)
 
       // TODO: handle these checks properly
       if (!session) {
@@ -53,22 +54,41 @@ export const runServer = () => {
       }
 
       if (isSessionEvent(clientPayload)) {
-        handleSessionEvent(ws, session, clientPayload)
+        const client = session.clients.find((client) => client.webSocket === ws)
+        // Should not happen since we make this check when finding the session but TS complains
+        if (!client) {
+          return
+        }
+        handleSessionEvent(client, session, clientPayload)
+        return
       }
 
       if (isGameEvent(clientPayload)) {
         const game = session.game
-        if (game) {
-          handleGameEvent(ws, game, clientPayload, session.id)
+        if (!game) {
+          // TODO: handle error
+          return
         }
+
+        const gameClient = game.clients.find((client) => {
+          client.webSocket === ws
+        })
+
+        if (!gameClient) {
+          //TODO: handle error
+          return
+        }
+
+        handleGameEvent(gameClient, game, session.id, clientPayload)
+        return
       }
 
-      console.warn(sessions)
+      console.warn(sessionsMap)
     })
 
     ws.on('close', (data) => {
-      closeSession(ws, sessions)
-      console.warn('closed: ', sessions)
+      closeSession(ws, sessionsMap)
+      console.warn('closed: ', sessionsMap)
     })
   })
 }

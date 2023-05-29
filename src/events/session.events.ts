@@ -2,15 +2,16 @@
 import WebSocket from 'ws'
 
 // Entities
-import { Session } from 'entities'
+import { Game, GameClient, Session, SessionClient } from 'entities'
 
 // Constants
 import { errors, sessionEventNames } from '../constants'
 
+// Payloads
+import { updateClientStatePayload, updateIsReadyPayload } from '../payloads'
+
 // Utils
-import { sendPayloadToClient, handleEventError, sendPayloadToClients } from 'utils'
-import { areClientsReady, isClientHost } from 'events/utils'
-import { updateIsReadyPayload } from './payloads/session.payloads'
+import { handleEventError, sendPayloadToClients, areClientsReady, isClientHost, sendPayloadToClient } from 'utils'
 
 export const startGame = (ws: WebSocket, session: Session) => {
   if (session.game) {
@@ -35,27 +36,33 @@ export const startGame = (ws: WebSocket, session: Session) => {
     handleEventError(ws, errors.notEveryPlayerIsReady)
   }
 
-  session.initialiseGame()
-  const payload = {
-    id: session.id
-  }
+  const gameClients = clients.map((sessionClient) => new GameClient(sessionClient.webSocket, sessionClient.name))
 
-  sendPayloadToClient(ws, payload, sessionEventNames.startGame)
+  const game = new Game(gameClients)
+
+  game.clients.forEach((client) => {
+    const card = game.deck.drawCard()
+    if (card) {
+      client.addCardToHand(card)
+    }
+  })
+
+  session.initialiseGame(game)
+  // TODO: clean this chunk up
+
+  sendPayloadToClients(
+    game.clients,
+    (targetClient) => updateClientStatePayload(game.clients, session.id, targetClient.webSocket === ws),
+    sessionEventNames.startGame
+  )
 }
 
-export const updateIsReady = (ws: WebSocket, session: Session) => {
-  const client = session.clients.find((client) => client.webSocket === ws)
-
-  if (!client) {
-    handleEventError(ws, 'Could not find player in session')
-    return
-  }
-
+export const updateIsReady = (client: SessionClient, session: Session) => {
   client.updateIsReady()
 
   sendPayloadToClients(
     session.clients,
-    updateIsReadyPayload(session.clients, session.id),
+    (targetClient) => updateIsReadyPayload(session.clients, session.id, targetClient.webSocket),
     sessionEventNames.updateIsReady
   )
 }

@@ -1,17 +1,26 @@
-export type Suit = 'Clubs' | 'Diamonds' | 'Hearts' | 'Spade'
+// Types
+import { Suit } from './@types'
 
 export class Card {
-  private suit
-  private name
-  private value
+  #suit
+  #name
+  #value
 
   constructor(suit: Suit, name: string, value: number) {
-    this.suit = suit
-    this.name = name
-    this.value = value
+    this.#suit = suit
+    this.#name = name
+    this.#value = value
   }
 
-  getValue() {
-    return this.value
+  get suit() {
+    return this.#suit
+  }
+
+  get name() {
+    return this.#name
+  }
+
+  get value() {
+    return this.#value
   }
 }

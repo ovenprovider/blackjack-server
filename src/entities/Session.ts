@@ -1,6 +1,6 @@
 // Entities
 import { Game } from './Game'
-import { InGameClient, InSessionClient } from './Client'
+import { GameClient, SessionClient } from './Client'
 
 // Utils
 import { getUuid } from 'utils'
@@ -8,11 +8,11 @@ import { getUuid } from 'utils'
 export class Session {
   readonly #maxNumberOfPlayers: number
   readonly #id = getUuid()
-  #clients: InSessionClient[]
-  #host: InSessionClient
+  #clients: SessionClient[]
+  #host: SessionClient
   #game: Game | undefined
 
-  constructor(maxNumberOfPlayers: number, client: InSessionClient) {
+  constructor(maxNumberOfPlayers: number, client: SessionClient) {
     this.#maxNumberOfPlayers = maxNumberOfPlayers
     this.#clients = [client]
     this.#host = client
@@ -26,16 +26,16 @@ export class Session {
     return this.#clients
   }
 
+  addClient(client: SessionClient) {
+    this.#clients.push(client)
+  }
+
   get host() {
     return this.#host
   }
 
-  initialiseGame() {
-    const inGameClients = this.#clients.map(
-      (inSessionClient) => new InGameClient(inSessionClient.webSocket, inSessionClient.name)
-    )
-
-    this.#game = new Game(inGameClients)
+  initialiseGame(game: Game) {
+    this.#game = game
   }
 
   get game() {

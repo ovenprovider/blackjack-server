@@ -6,7 +6,7 @@ import { getUuid } from 'utils'
 
 export abstract class Client {
   readonly #id: string = getUuid()
-  #ws: WebSocket
+  readonly #ws: WebSocket
   #name: string
   constructor(webSocket: WebSocket, name: string) {
     this.#ws = webSocket

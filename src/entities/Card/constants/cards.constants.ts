@@ -1,4 +1,4 @@
-import { Suit } from 'entities/Card/Card'
+import { type Suit } from '../@types'
 
 export const suits: Suit[] = ['Clubs', 'Diamonds', 'Hearts', 'Spade']
 

@@ -1,7 +1,7 @@
 // Entities
 import { Client } from './Client'
 
-export class InSessionClient extends Client {
+export class SessionClient extends Client {
   #isReady = false
 
   get isReady() {

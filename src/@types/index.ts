@@ -1,1 +1,1 @@
-export type { Sessions } from './server.types'
+export type { SessionsMap } from './server.types'

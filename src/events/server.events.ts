@@ -2,19 +2,20 @@
 import WebSocket from 'ws'
 
 // Entities
-import { InSessionClient, Session } from 'entities'
+import { SessionClient, Session } from 'entities'
 
 // Types
-import { Sessions } from '@types'
+import { SessionsMap } from '@types'
 
 // Constants
 import { errors, serverEventNames } from '../constants'
 
 // Utils
-import { findSession, handleEventError, sendPayloadToClient } from 'utils'
+import { findSession, handleEventError, sendPayloadToClients } from 'utils'
+import { joinSessionPayload } from 'payloads/server.payloads'
 
-export const startSession = (ws: WebSocket, sessions: Sessions, clientPayload: any) => {
-  sessions.set(ws, new Session(clientPayload.maxNumberOfPlayers ?? 2, new InSessionClient(ws, clientPayload.name)))
+export const startSession = (ws: WebSocket, sessions: SessionsMap, clientPayload: any) => {
+  sessions.set(ws, new Session(clientPayload.maxNumberOfPlayers ?? 2, new SessionClient(ws, clientPayload.name)))
   const id = sessions.get(ws)?.id
 
   const payload = {
@@ -24,27 +25,26 @@ export const startSession = (ws: WebSocket, sessions: Sessions, clientPayload: a
   ws.emit(serverEventNames.startSession, payload)
 }
 
-export const joinSession = (ws: WebSocket, sessions: Sessions, id: string, name: string) => {
-  const session = findSession(id, sessions)
+export const joinSession = (ws: WebSocket, sessionsMap: SessionsMap, sessionId: string, clientName: string) => {
+  const session = findSession(sessionsMap, sessionId)
   if (!session) {
     handleEventError(ws, errors.sessionNotFound)
     return
   }
-  session.addPlayerToSession(new InSessionClient(ws, name))
+  session.addClient(new SessionClient(ws, clientName))
 
-  const payload = {
-    id: session.getId(),
-    players: session.getPlayers()
-  }
-
-  sendPayloadToClient(ws, payload, serverEventNames.joinSession)
+  sendPayloadToClients(
+    session.clients,
+    (targetClient) => joinSessionPayload(session, targetClient.webSocket === ws),
+    serverEventNames.joinSession
+  )
 }
 
-export const closeSession = (ws: WebSocket, sessions: Sessions) => {
-  const session = sessions.get(ws)
+export const closeSession = (ws: WebSocket, sessionsMap: SessionsMap) => {
+  const session = sessionsMap.get(ws)
   // TODO: handle when session is not found
   if (!session) return
   if (session.clients.length <= 1) {
-    sessions.delete(ws)
+    sessionsMap.delete(ws)
   }
 }

@@ -2,7 +2,7 @@
 import { Client } from './Client'
 import { Card } from 'entities'
 
-export class InGameClient extends Client {
+export class GameClient extends Client {
   #hand: Card[] = []
   #isDrawing = false
   #isHolding = false
@@ -20,8 +20,8 @@ export class InGameClient extends Client {
     return this.#isDrawing
   }
 
-  updateIsDrawing() {
-    this.#isDrawing
+  updateIsDrawing(isDrawing: boolean) {
+    this.#isDrawing = isDrawing
   }
 
   get isHolding() {
@@ -38,5 +38,11 @@ export class InGameClient extends Client {
 
   updateIsOnScreen(isOnScreen: boolean) {
     this.#isOnScreen = isOnScreen
+  }
+
+  reset() {
+    this.#hand = []
+    this.#isDrawing = false
+    this.#isHolding = false
   }
 }

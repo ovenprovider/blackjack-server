@@ -8,6 +8,7 @@ export class Deck {
   private initialDeck: Card[] = []
   private currentDeck: Card[] = []
 
+  // TODO: move the funcitons outside
   constructor() {
     this.#initiateDeck()
     this.#shuffle()

@@ -1,3 +1,3 @@
 export { Client } from './Client'
-export { InSessionClient } from './InSessionClient'
-export { InGameClient } from './InGameClient'
+export { SessionClient } from './SessionClient'
+export { GameClient } from './GameClient'

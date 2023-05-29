@@ -2,9 +2,9 @@
 import { WebSocket } from 'ws'
 
 // Entities
-import { InSessionClient, Session } from 'entities'
+import { SessionClient, Session } from 'entities'
 
-export const areClientsReady = (clients: InSessionClient[]) => {
+export const areClientsReady = (clients: SessionClient[]) => {
   return clients.every((client) => client.isReady)
 }
 
