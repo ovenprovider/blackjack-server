@@ -7,7 +7,7 @@ export class Game {
   #currentRound = 1
   #numberOfGamesCompleted = 0
   #clients: GameClient[]
-  #isCompleted = false
+  #isFinished = false
   constructor(clients: GameClient[]) {
     this.#deck = new Deck()
     this.#clients = clients
@@ -17,12 +17,12 @@ export class Game {
     this.#currentRound += 1
   }
 
-  reset() {
+  restart() {
     this.#deck = new Deck()
-    this.#clients.forEach((client) => client.reset())
+    this.#clients.forEach((client) => client.restart())
     this.#currentRound = 1
     this.#numberOfGamesCompleted += 1
-    this.#isCompleted = false
+    this.#isFinished = false
   }
 
   get clients() {
@@ -41,11 +41,11 @@ export class Game {
     return this.#numberOfGamesCompleted
   }
 
-  get isCompleted() {
-    return this.#isCompleted
+  get isFinished() {
+    return this.#isFinished
   }
 
-  updateIsCompleted() {
-    this.#isCompleted = true
+  updateIsFinished() {
+    this.#isFinished = true
   }
 }

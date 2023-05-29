@@ -23,7 +23,8 @@ import {
   updateIsOnScreen,
   updateIsDrawing,
   updateIsHolding,
-  endRound
+  endRound,
+  updateIsReadyToRestart
 } from '../events'
 
 // Utils
@@ -64,10 +65,13 @@ export const handleGameEvent = (client: GameClient, game: Game, sessionId: strin
       updateIsOnScreen(client, clientPayload.isOnScreen)
       break
     case gameEventNames.updateIsDrawing:
-      updateIsDrawing(client)
+      updateIsDrawing(client, sessionId)
       break
     case gameEventNames.updateIsHolding:
-      updateIsHolding(client)
+      updateIsHolding(client, sessionId)
+      break
+    case gameEventNames.updateIsReadyToRestart:
+      updateIsReadyToRestart(client, game, clientPayload.isReadyToRestart, sessionId)
       break
     default:
       return
@@ -75,13 +79,13 @@ export const handleGameEvent = (client: GameClient, game: Game, sessionId: strin
 
   if (shouldEndRound(game.clients)) {
     endRound(game)
-  }
 
-  sendPayloadToClients(
-    game.clients,
-    (targetClient) => updateClientStatePayload(game.clients, sessionId, targetClient.webSocket === client.webSocket),
-    clientPayload.eventName
-  )
+    sendPayloadToClients(
+      game.clients,
+      (targetClient) => updateClientStatePayload(game.clients, sessionId, targetClient.webSocket === client.webSocket),
+      clientPayload.eventName
+    )
+  }
 }
 
 export const handleEventError = (ws: WebSocket, error: string) => {

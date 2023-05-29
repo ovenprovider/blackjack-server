@@ -1,12 +1,13 @@
 // Entities
 import { Client } from './Client'
-import { Card } from 'entities'
+import { Card } from '../Card'
 
 export class GameClient extends Client {
   #hand: Card[] = []
   #isDrawing = false
   #isHolding = false
   #isOnScreen = false
+  #isReadyToRestart = false
 
   get hand() {
     return this.#hand
@@ -40,9 +41,18 @@ export class GameClient extends Client {
     this.#isOnScreen = isOnScreen
   }
 
-  reset() {
+  get isReadyToRestart() {
+    return this.#isReadyToRestart
+  }
+
+  updateIsReadyToRestart(isReadyToRestart: boolean) {
+    this.#isReadyToRestart = isReadyToRestart
+  }
+
+  restart() {
     this.#hand = []
     this.#isDrawing = false
     this.#isHolding = false
+    this.#isReadyToRestart = false
   }
 }

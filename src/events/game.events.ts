@@ -2,11 +2,20 @@
 import { Deck, Game, GameClient } from 'entities'
 
 // Constants
-import { errors } from '../constants'
+import { errors, gameEventNames } from '../constants'
+
+// Payloads
+import { updateClientPayload, updateClientStatePayload, updateIsReadyToRestartPayload } from 'payloads'
 
 // Utils
-import { handleEventError } from 'utils'
-import { shouldEndRound, shouldSkipPlayer } from '../utils/game.utils'
+import {
+  handleEventError,
+  sendPayloadToClient,
+  sendPayloadToClients,
+  shouldEndRound,
+  shouldRestartGame,
+  shouldSkipPlayer
+} from 'utils'
 
 const dealCards = (clients: GameClient[], deck: Deck) => {
   clients.forEach((client) => {
@@ -36,20 +45,22 @@ export const endRound = (game: Game) => {
   game.addRound()
 }
 
-export const resetGame = (game: Game) => {
-  game.reset()
-}
-
-export const updateIsHolding = (client: GameClient) => {
+export const updateIsHolding = (client: GameClient, sessionId: string) => {
   if (client.isHolding || client.isDrawing) {
     handleEventError(client.webSocket, errors.clientIsHolding)
     return
   }
 
   client.updateIsHolding(true)
+
+  sendPayloadToClient(
+    client.webSocket,
+    updateClientPayload(client, sessionId, 'isHolding'),
+    gameEventNames.updateIsHolding
+  )
 }
 
-export const updateIsDrawing = (client: GameClient) => {
+export const updateIsDrawing = (client: GameClient, sessionId: string) => {
   // This shouldn't happen but if it does
   if (client.isHolding) {
     handleEventError(client.webSocket, errors.clientIsHolding)
@@ -57,6 +68,12 @@ export const updateIsDrawing = (client: GameClient) => {
   }
 
   client.updateIsDrawing(true)
+
+  sendPayloadToClient(
+    client.webSocket,
+    updateClientPayload(client, sessionId, 'isDrawing'),
+    gameEventNames.updateIsDrawing
+  )
 }
 
 export const endGame = (game: Game) => {
@@ -64,5 +81,36 @@ export const endGame = (game: Game) => {
   if (!shouldEndRound(game.clients)) {
     return
   }
-  game.updateIsCompleted()
+  game.updateIsFinished()
+}
+
+export const updateIsReadyToRestart = (
+  client: GameClient,
+  game: Game,
+  isReadyToRestart: boolean,
+  sessionId: string
+) => {
+  if (!game.isFinished) {
+    handleEventError(client.webSocket, errors.gameIsNotFinished)
+    return
+  }
+
+  client.updateIsReadyToRestart(isReadyToRestart)
+
+  sendPayloadToClients(
+    game.clients,
+    (targetClient) =>
+      updateIsReadyToRestartPayload(game.clients, sessionId, targetClient.webSocket === client.webSocket),
+    gameEventNames.updateIsReadyToRestart
+  )
+
+  if (shouldRestartGame(game.clients)) {
+    game.restart()
+
+    sendPayloadToClients(
+      game.clients,
+      (targetClient) => updateClientStatePayload(game.clients, sessionId, targetClient.webSocket === client.webSocket),
+      gameEventNames.dealCards
+    )
+  }
 }

@@ -15,5 +15,7 @@ export const sendPayloadToClients = (
 }
 
 export const sendPayloadToClient = (ws: WebSocket, payload: any, event: string) => {
-  ws.emit(event, payload)
+  if (ws.readyState === ws.OPEN) {
+    ws.emit('message', { ...payload, event })
+  }
 }

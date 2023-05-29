@@ -1,6 +1,6 @@
 // Entities
 import { Game } from './Game'
-import { GameClient, SessionClient } from './Client'
+import { SessionClient } from './Client'
 
 // Utils
 import { getUuid } from 'utils'

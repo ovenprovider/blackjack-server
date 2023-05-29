@@ -11,9 +11,9 @@ export const joinSessionPayload = (session: Session, isTargetClient: boolean) =>
   }
 }
 
-export const startSessionPayload = (session: Session) => {
+export const startSessionPayload = (sessionId: string, maxNumberOfPlayers: number) => {
   return {
-    sessionId: session.id,
-    maxNumberOfPlayers: session.maxNumberOfPlayers
+    sessionId,
+    maxNumberOfPlayers
   }
 }
