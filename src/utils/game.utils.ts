@@ -23,7 +23,7 @@ export const shouldEndRound = (clients: GameClient[]) => {
   return clients.every((client) => shouldSkipPlayer(client) || client.isDrawing)
 }
 
-export const isGameCompleted = (clients: GameClient[]) => {
+export const isGameFinished = (clients: GameClient[]) => {
   return clients.every((client) => shouldSkipPlayer(client))
 }
 

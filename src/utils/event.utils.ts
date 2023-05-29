@@ -24,11 +24,13 @@ import {
   updateIsDrawing,
   updateIsHolding,
   endRound,
-  updateIsReadyToRestart
+  updateIsReadyToRestart,
+  endGame
 } from '../events'
 
 // Utils
 import { shouldEndRound, sendPayloadToClients } from 'utils'
+import { isGameFinished } from './game.utils'
 
 export const handleServerEvents = (ws: WebSocket, sessions: SessionsMap, clientPayload: any) => {
   switch (clientPayload.eventName) {
@@ -86,6 +88,17 @@ export const handleGameEvent = (client: GameClient, game: Game, sessionId: strin
       clientPayload.eventName
     )
   }
+
+  if (isGameFinished(game.clients)) {
+    endGame(game)
+
+    sendPayloadToClients(
+      game.clients,
+      (targetClient) => updateClientStatePayload(game.clients, sessionId, targetClient.webSocket === client.webSocket),
+      clientPayload.eventName
+    )
+  }
+
 }
 
 export const handleEventError = (ws: WebSocket, error: string) => {

@@ -23,5 +23,6 @@ export const transformGameClient = (client: GameClient, isTargetClient: boolean)
     }
   }),
   numberOfCardsInHand: client.hand.length,
-  handValue: isBusted(client.hand) ? calculateHandValue([client.hand[0]]) : calculateHandValue(client.hand)
+  handValue:
+    isTargetClient || isBusted(client.hand) ? calculateHandValue(client.hand) : calculateHandValue([client.hand[0]])
 })
