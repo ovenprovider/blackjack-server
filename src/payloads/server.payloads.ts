@@ -17,3 +17,9 @@ export const startSessionPayload = (sessionId: string, maxNumberOfPlayers: numbe
     maxNumberOfPlayers
   }
 }
+
+export const onConnectPayload = (clientId: string) => {
+  return {
+    clientId
+  }
+}

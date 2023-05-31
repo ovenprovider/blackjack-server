@@ -5,4 +5,4 @@ export const gameEventNames = {
   updateIsHolding: 'updateIsHolding',
   initialiseHands: 'initialiseHands',
   dealCards: 'dealCards'
-}
+} as const

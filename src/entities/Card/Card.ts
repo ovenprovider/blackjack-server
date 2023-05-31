@@ -2,9 +2,9 @@
 import { Suit } from './@types'
 
 export class Card {
-  #suit
-  #name
-  #value
+  readonly #suit
+  readonly #name
+  readonly #value
 
   constructor(suit: Suit, name: string, value: number) {
     this.#suit = suit

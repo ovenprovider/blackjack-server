@@ -26,7 +26,12 @@ export const startSession = (ws: WebSocket, sessions: SessionsMap, clientPayload
     return
   }
 
-  sendPayloadToClient(ws, startSessionPayload(session.id, session.maxNumberOfPlayers), serverEventNames.startSession)
+  sendPayloadToClient(
+    ws.emit,
+    ws.readyState,
+    startSessionPayload(session.id, session.maxNumberOfPlayers),
+    serverEventNames.startSession
+  )
 }
 
 export const joinSession = (ws: WebSocket, sessionsMap: SessionsMap, sessionId: string, clientName: string) => {

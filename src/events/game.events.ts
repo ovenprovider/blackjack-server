@@ -54,7 +54,8 @@ export const updateIsHolding = (client: GameClient, sessionId: string) => {
   client.updateIsHolding(true)
 
   sendPayloadToClient(
-    client.webSocket,
+    client.webSocket.emit,
+    client.webSocket.readyState,
     updateClientPayload(client, sessionId, 'isHolding'),
     gameEventNames.updateIsHolding
   )
@@ -70,7 +71,8 @@ export const updateIsDrawing = (client: GameClient, sessionId: string) => {
   client.updateIsDrawing(true)
 
   sendPayloadToClient(
-    client.webSocket,
+    client.webSocket.emit,
+    client.webSocket.readyState,
     updateClientPayload(client, sessionId, 'isDrawing'),
     gameEventNames.updateIsDrawing
   )

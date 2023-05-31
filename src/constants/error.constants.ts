@@ -9,4 +9,4 @@ export const errors = {
   clientIsHolding: 'clientIsHolding',
   deckIsEmpty: 'deckIsEmpty',
   gameIsNotFinished: 'gameIsNotFinished'
-}
+} as const

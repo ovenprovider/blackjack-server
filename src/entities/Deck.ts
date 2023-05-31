@@ -5,8 +5,8 @@ import { Card } from './Card'
 import { cardNumbers, suits } from './Card/constants'
 
 export class Deck {
-  private initialDeck: Card[] = []
-  private currentDeck: Card[] = []
+  #initialDeck: Card[] = []
+  #currentDeck: Card[] = []
 
   // TODO: move the funcitons outside
   constructor() {
@@ -17,19 +17,19 @@ export class Deck {
   #initiateDeck() {
     for (const suit of suits) {
       for (const [name, value] of Object.entries(cardNumbers)) {
-        this.initialDeck.push(new Card(suit, name, value))
+        this.#initialDeck.push(new Card(suit, name, value))
       }
     }
   }
 
   drawCard() {
-    return this.currentDeck.shift()
+    return this.#currentDeck.shift()
   }
 
   #shuffle() {
-    for (let i = 0; i < this.initialDeck.length; i++) {
-      const randomIndex = Math.floor(Math.random() * (this.initialDeck.length - 0))
-      this.currentDeck.push(...this.initialDeck.splice(randomIndex))
+    for (let i = 0; i < this.#initialDeck.length; i++) {
+      const randomIndex = Math.floor(Math.random() * (this.#initialDeck.length - 0))
+      this.#currentDeck.push(...this.#initialDeck.splice(randomIndex))
     }
   }
 }
