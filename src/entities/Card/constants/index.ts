@@ -1,1 +1,1 @@
-export { cardNumbers, suits } from './cards.constants'
+export { suits } from './cards.constants'

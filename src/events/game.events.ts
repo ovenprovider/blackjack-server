@@ -1,8 +1,8 @@
 // Entities
 import { Deck, Game, GameClient } from 'entities'
 
-// Constants
-import { errors, gameEventNames } from '../constants'
+// Enums
+import { Errors, GameEventNames } from 'enums'
 
 // Payloads
 import { updateClientPayload, updateClientStatePayload, updateIsReadyToRestartPayload } from 'payloads'
@@ -22,7 +22,7 @@ const dealCards = (clients: GameClient[], deck: Deck) => {
     if (!shouldSkipPlayer(client)) {
       const card = deck.drawCard()
       if (!card) {
-        handleEventError(client.webSocket, errors.deckIsEmpty)
+        handleEventError(client.webSocket, Errors.deckIsEmpty)
         return
       }
       client.addCardToHand(card)
@@ -47,7 +47,7 @@ export const endRound = (game: Game) => {
 
 export const updateIsHolding = (client: GameClient, sessionId: string) => {
   if (client.isHolding || client.isDrawing) {
-    handleEventError(client.webSocket, errors.clientIsHolding)
+    handleEventError(client.webSocket, Errors.clientIsHolding)
     return
   }
 
@@ -57,14 +57,14 @@ export const updateIsHolding = (client: GameClient, sessionId: string) => {
     client.webSocket.emit,
     client.webSocket.readyState,
     updateClientPayload(client, sessionId, 'isHolding'),
-    gameEventNames.updateIsHolding
+    GameEventNames.updateIsHolding
   )
 }
 
 export const updateIsDrawing = (client: GameClient, sessionId: string) => {
   // This shouldn't happen but if it does
   if (client.isHolding) {
-    handleEventError(client.webSocket, errors.clientIsHolding)
+    handleEventError(client.webSocket, Errors.clientIsHolding)
     return
   }
 
@@ -74,15 +74,16 @@ export const updateIsDrawing = (client: GameClient, sessionId: string) => {
     client.webSocket.emit,
     client.webSocket.readyState,
     updateClientPayload(client, sessionId, 'isDrawing'),
-    gameEventNames.updateIsDrawing
+    GameEventNames.updateIsDrawing
   )
 }
 
 export const endGame = (game: Game) => {
-  // TODO: something that should not have happened, happened
+  // something that should not have happened, happened
   if (!shouldEndRound(game.clients)) {
     return
   }
+
   game.updateIsFinished()
 }
 
@@ -93,7 +94,7 @@ export const updateIsReadyToRestart = (
   sessionId: string
 ) => {
   if (!game.isFinished) {
-    handleEventError(client.webSocket, errors.gameIsNotFinished)
+    handleEventError(client.webSocket, Errors.gameIsNotFinished)
     return
   }
 
@@ -103,7 +104,7 @@ export const updateIsReadyToRestart = (
     game.clients,
     (targetClient) =>
       updateIsReadyToRestartPayload(game.clients, sessionId, targetClient.webSocket === client.webSocket),
-    gameEventNames.updateIsReadyToRestart
+    GameEventNames.updateIsReadyToRestart
   )
 
   if (shouldRestartGame(game.clients)) {
@@ -112,7 +113,7 @@ export const updateIsReadyToRestart = (
     sendPayloadToClients(
       game.clients,
       (targetClient) => updateClientStatePayload(game.clients, sessionId, targetClient.webSocket === client.webSocket),
-      gameEventNames.dealCards
+      GameEventNames.dealCards
     )
   }
 }

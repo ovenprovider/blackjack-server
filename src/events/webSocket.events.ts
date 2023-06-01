@@ -5,33 +5,35 @@ import WebSocket from 'ws'
 import { ClientIdsMap, SessionsMap } from '@types'
 
 // Event Handler
-import { handleServerEvent, handleSessionEvent, handleGameEvent } from '../eventHandlers'
+import { handleServerEvent, handleSessionEvent, handleGameEvent } from 'eventHandlers'
+
+// Payloads
+import { onConnectPayload } from 'payloads'
 
 // Utils
 import {
   parseJSON,
   sendPayloadToClient,
-  validateClientEventPayload,
   isServerEvent,
   isSessionEvent,
   isGameEvent,
   findSessionWithClient,
   getUuid
 } from 'utils'
-import { onConnectPayload } from 'payloads'
+import { serverSchema } from 'schema'
 
 export const onMessage = (data: WebSocket.RawData, sessionsMap: SessionsMap, ws: WebSocket) => {
   const clientPayload = parseJSON(data.toString())
-
+  const validatedPayload = serverSchema.parse(clientPayload)
   // Validate data: the validation will also fail here if the JSON has failed to parse
-  if (!validateClientEventPayload(data.toString())) {
+  if (!validatedPayload) {
     sendPayloadToClient(ws.emit, ws.readyState, {}, 'error')
     //ws.close(1007) // Unsupported payload
     ws.terminate()
     return
   }
 
-  if (isServerEvent(clientPayload)) {
+  if (isServerEvent(validatedPayload.eventName)) {
     handleServerEvent(ws, sessionsMap, clientPayload)
     return
   }
@@ -49,6 +51,7 @@ export const onMessage = (data: WebSocket.RawData, sessionsMap: SessionsMap, ws:
     if (!client) {
       return
     }
+
     handleSessionEvent(client, session, clientPayload)
     return
   }
@@ -56,7 +59,7 @@ export const onMessage = (data: WebSocket.RawData, sessionsMap: SessionsMap, ws:
   if (isGameEvent(clientPayload)) {
     const game = session.game
     if (!game) {
-      // TODO: handle error
+      // Game has not started
       return
     }
 
@@ -65,7 +68,8 @@ export const onMessage = (data: WebSocket.RawData, sessionsMap: SessionsMap, ws:
     })
 
     if (!gameClient) {
-      //TODO: handle error
+      // Client is not in the game, although this condition is checked against the
+      // the reference, it needs to be changed if we want to handle reconnects
       return
     }
 
@@ -92,4 +96,9 @@ export const onClose = (ws: WebSocket, clientIdsMap: ClientIdsMap, sessionsMap: 
   if (session.clients.length <= 1) {
     sessionsMap.delete(ws)
   }
+}
+
+export const onError = (error: Error) => {
+  // TODO: error handler
+  return
 }

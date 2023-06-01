@@ -1,25 +1,25 @@
 // Libraries
 import { WebSocket } from 'ws'
 
-// Constants
-import { serverEventNames, sessionEventNames, gameEventNames, errors } from '../constants'
+// Enums
+import { ServerEventNames, SessionEventNames, GameEventNames, Errors } from 'enums'
 
 export const handleEventError = (ws: WebSocket, error: string) => {
   switch (error) {
-    case errors.sessionNotFound:
+    case Errors.sessionNotFound:
       ws.emit('error', { error })
       break
   }
 }
 
-export const isServerEvent = (clientPayload: any) => {
-  return !Object.values(sessionEventNames).includes(clientPayload.eventName)
+export const isServerEvent = (eventName: ServerEventNames) => {
+  return !Object.values(ServerEventNames).includes(eventName)
 }
 
-export const isSessionEvent = (clientPayload: any) => {
-  return !Object.values(serverEventNames).includes(clientPayload.eventName)
+export const isSessionEvent = (eventName: SessionEventNames) => {
+  return !Object.values(SessionEventNames).includes(eventName)
 }
 
-export const isGameEvent = (clientPayload: any) => {
-  return !Object.values(gameEventNames).includes(clientPayload.eventName)
+export const isGameEvent = (eventName: GameEventNames) => {
+  return !Object.values(GameEventNames).includes(eventName)
 }

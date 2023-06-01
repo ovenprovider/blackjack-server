@@ -10,8 +10,8 @@ import { SessionsMap } from '@types'
 // Payloads
 import { joinSessionPayload, startSessionPayload } from 'payloads/server.payloads'
 
-// Constants
-import { errors, serverEventNames } from '../constants'
+// Enums
+import { Errors, ServerEventNames } from 'enums'
 
 // Utils
 import { findSession, handleEventError, sendPayloadToClient, sendPayloadToClients } from 'utils'
@@ -30,14 +30,14 @@ export const startSession = (ws: WebSocket, sessions: SessionsMap, clientPayload
     ws.emit,
     ws.readyState,
     startSessionPayload(session.id, session.maxNumberOfPlayers),
-    serverEventNames.startSession
+    ServerEventNames.startSession
   )
 }
 
 export const joinSession = (ws: WebSocket, sessionsMap: SessionsMap, sessionId: string, clientName: string) => {
   const session = findSession(sessionsMap, sessionId)
   if (!session) {
-    handleEventError(ws, errors.sessionNotFound)
+    handleEventError(ws, Errors.sessionNotFound)
     return
   }
   session.addClient(new SessionClient(ws, clientName))
@@ -45,13 +45,12 @@ export const joinSession = (ws: WebSocket, sessionsMap: SessionsMap, sessionId: 
   sendPayloadToClients(
     session.clients,
     (targetClient) => joinSessionPayload(session, targetClient.webSocket === ws),
-    serverEventNames.joinSession
+    ServerEventNames.joinSession
   )
 }
 
 export const closeSession = (ws: WebSocket, sessionsMap: SessionsMap) => {
   const session = sessionsMap.get(ws)
-  // TODO: handle when session is not found
   if (!session) return
   if (session.clients.length <= 1) {
     sessionsMap.delete(ws)

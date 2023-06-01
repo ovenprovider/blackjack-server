@@ -4,8 +4,8 @@ import { WebSocket } from 'ws'
 // Entities
 import { GameClient, SessionClient } from 'entities'
 
-// Constants
-import { webSocketEventNames } from '../constants'
+// Enums
+import { WebSocketEventNames } from 'enums'
 
 export const sendPayloadToClients = (
   clients: GameClient[] | SessionClient[],
@@ -25,6 +25,6 @@ export const sendPayloadToClient = (
 ) => {
   // TODO: handle when websocket is not open, but shoudl be
   if (webSocketReadyState === WebSocket.OPEN) {
-    emit(webSocketEventNames.onMessage, { ...payload, event })
+    emit(WebSocketEventNames.onMessage, { ...payload, event })
   }
 }

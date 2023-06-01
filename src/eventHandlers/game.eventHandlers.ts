@@ -1,8 +1,8 @@
 // Entities
 import { GameClient, Game } from 'entities'
 
-// Constants
-import { gameEventNames } from '../constants'
+// Enums
+import { GameEventNames } from '../enums'
 
 // Payloads
 import { updateClientStatePayload } from 'payloads'
@@ -22,16 +22,16 @@ import { shouldEndRound, sendPayloadToClients, isGameFinished } from 'utils'
 
 export const handleGameEvent = (client: GameClient, game: Game, sessionId: string, clientPayload: any) => {
   switch (clientPayload.eventName) {
-    case gameEventNames.updateIsOnScreen:
+    case GameEventNames.updateIsOnScreen:
       updateIsOnScreen(client, clientPayload.isOnScreen)
       break
-    case gameEventNames.updateIsDrawing:
+    case GameEventNames.updateIsDrawing:
       updateIsDrawing(client, sessionId)
       break
-    case gameEventNames.updateIsHolding:
+    case GameEventNames.updateIsHolding:
       updateIsHolding(client, sessionId)
       break
-    case gameEventNames.updateIsReadyToRestart:
+    case GameEventNames.updateIsReadyToRestart:
       updateIsReadyToRestart(client, game, clientPayload.isReadyToRestart, sessionId)
       break
     default:

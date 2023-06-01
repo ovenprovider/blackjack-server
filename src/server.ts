@@ -5,7 +5,7 @@ import { WebSocketServer } from 'ws'
 import { ClientIdsMap, SessionsMap } from '@types'
 
 // Events
-import { closeSession, onConnect, onMessage } from './events'
+import { onConnect, onMessage, onClose, onError } from './events'
 
 export const runServer = () => {
   const sessionsMap: SessionsMap = new Map()
@@ -19,12 +19,7 @@ export const runServer = () => {
   wss.on('connection', (ws) => {
     onConnect(ws, clientIdsMap)
     ws.on('message', (data) => onMessage(data, sessionsMap, ws))
-
-    ws.on('error', console.error)
-
-    ws.on('close', (data) => {
-      closeSession(ws, sessionsMap)
-      console.warn('closed: ', sessionsMap)
-    })
+    ws.on('error', (error) => onError(error))
+    ws.on('close', () => onClose(ws, clientIdsMap, sessionsMap))
   })
 }

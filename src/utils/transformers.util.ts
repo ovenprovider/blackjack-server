@@ -1,5 +1,8 @@
+// Entities
 import { Card, GameClient, SessionClient } from 'entities'
-import { isBusted, calculateHandValue } from './game.utils'
+
+// Utils
+import { isBusted, calculateHandValue } from './'
 
 export const transformCard = (card: Card) => ({
   suit: card.suit,

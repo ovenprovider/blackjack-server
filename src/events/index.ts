@@ -8,4 +8,4 @@ export {
   endGame,
   updateIsReadyToRestart
 } from './game.events'
-export { onMessage, onClose, onConnect } from './webSocket.events'
+export { onMessage, onClose, onConnect, onError } from './webSocket.events'

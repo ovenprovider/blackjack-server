@@ -2,7 +2,10 @@
 import { Card } from './Card'
 
 // Constants
-import { cardNumbers, suits } from './Card/constants'
+import { suits } from './Card/constants'
+
+// Enums
+import { CardNumbers } from './Card/enums'
 
 export class Deck {
   #initialDeck: Card[] = []
@@ -16,8 +19,8 @@ export class Deck {
 
   #initiateDeck() {
     for (const suit of suits) {
-      for (const [name, value] of Object.entries(cardNumbers)) {
-        this.#initialDeck.push(new Card(suit, name, value))
+      for (const [name, value] of Object.entries(CardNumbers)) {
+        this.#initialDeck.push(new Card(suit, name, value as CardNumbers))
       }
     }
   }

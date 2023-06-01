@@ -1,13 +1,14 @@
 // Libraries
-import Joi from 'joi'
+import { z } from 'zod'
 
-// Constants
-import { serverEventNames } from '../constants'
+// Schema
+import { baseSchema } from './'
 
-export const serverSchema = Joi.object({
-  clientId: Joi.string().uuid({
-    version: ['uuidv1']
-  }),
-  eventName: Joi.string().valid([Object.values(serverEventNames)]),
-  propertyToUpdate: Joi.string().valid('isReady')
-})
+// Enums
+import { ServerEventNames } from 'enums'
+
+export const serverSchema = baseSchema
+  .extend({
+    eventName: z.nativeEnum(ServerEventNames)
+  })
+  .required()
