@@ -11,29 +11,23 @@ import { handleServerEvent, handleSessionEvent, handleGameEvent } from 'eventHan
 import { onConnectPayload } from 'payloads'
 
 // Utils
-import {
-  parseJSON,
-  sendPayloadToClient,
-  isServerEvent,
-  isSessionEvent,
-  isGameEvent,
-  findSessionWithClient,
-  getUuid
-} from 'utils'
+import { parseJSON, sendPayloadToClient, findSessionWithClient, getUuid, isOfEventType } from 'utils'
 import { serverSchema } from 'schema'
+import { GameEventNames, ServerEventNames, SessionEventNames } from 'enums'
 
 export const onMessage = (data: WebSocket.RawData, sessionsMap: SessionsMap, ws: WebSocket) => {
   const clientPayload = parseJSON(data.toString())
-  const validatedPayload = serverSchema.parse(clientPayload)
+  const result = serverSchema.safeParse(clientPayload)
   // Validate data: the validation will also fail here if the JSON has failed to parse
-  if (!validatedPayload) {
+  if (!result.success) {
     sendPayloadToClient(ws.emit, ws.readyState, {}, 'error')
     //ws.close(1007) // Unsupported payload
     ws.terminate()
     return
   }
 
-  if (isServerEvent(validatedPayload.eventName)) {
+  const validatedPayload = result.data
+  if (isOfEventType(ServerEventNames, validatedPayload.eventName)) {
     handleServerEvent(ws, sessionsMap, clientPayload)
     return
   }
@@ -45,7 +39,7 @@ export const onMessage = (data: WebSocket.RawData, sessionsMap: SessionsMap, ws:
     return
   }
 
-  if (isSessionEvent(clientPayload)) {
+  if (isOfEventType(SessionEventNames, validatedPayload.eventName)) {
     const client = session.clients.find((client) => client.webSocket === ws)
     // Should not happen since we make this check when finding the session but TS complains
     if (!client) {
@@ -56,7 +50,7 @@ export const onMessage = (data: WebSocket.RawData, sessionsMap: SessionsMap, ws:
     return
   }
 
-  if (isGameEvent(clientPayload)) {
+  if (isOfEventType(GameEventNames, validatedPayload.eventName)) {
     const game = session.game
     if (!game) {
       // Game has not started

@@ -12,14 +12,9 @@ export const handleEventError = (ws: WebSocket, error: string) => {
   }
 }
 
-export const isServerEvent = (eventName: ServerEventNames) => {
-  return !Object.values(ServerEventNames).includes(eventName)
-}
-
-export const isSessionEvent = (eventName: SessionEventNames) => {
-  return !Object.values(SessionEventNames).includes(eventName)
-}
-
-export const isGameEvent = (eventName: GameEventNames) => {
-  return !Object.values(GameEventNames).includes(eventName)
+export const isOfEventType = (
+  eventNames: typeof ServerEventNames | typeof SessionEventNames | typeof GameEventNames,
+  eventName: string
+) => {
+  return !Object.values(eventNames).includes(eventName)
 }

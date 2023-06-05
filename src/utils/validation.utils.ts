@@ -1,7 +1,7 @@
 // Libraries
 import WebSocket from 'ws'
 
-// TODO: add validation library
+// TODO: add validation library and remove these
 const allowedProperties = ['id', 'action', 'type', 'numberOfPlayers']
 const allowedValueTypes = ['string', 'object', 'number', 'boolean']
 
