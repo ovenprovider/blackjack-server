@@ -1,5 +1,5 @@
 # blackjack-server
-Event driven BlackJack server using Node.js, ws.js to handle Websocks and zod for validation.
+Event driven BlackJack server using Node.js, ws.js to handle Websockets and zod for validation.
 
 The server handles multiplayer BlackJack logic in real time. When it receives a request from the client, it validates the data and also checks game logic to ensure game integrity. This is to stop front end bugs from allowing invalid requests or bad actors from trying to cheat. 
 
