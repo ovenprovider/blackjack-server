@@ -1,2 +1,3 @@
 # blackjack-server
-blackjack server using websockets
+Event driven BlackJack server using Node.js, ws.js to handle Websocks and zod for validation.
+
